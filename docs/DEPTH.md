@@ -11,7 +11,7 @@
 | M3 时窗配准 | 查一对一配对、时差、未用读数 | `GET /api/runs/{run_id}/pairing/{cabinet}` | `app/modules/pairing/matching.py` `app/modules/pairing/schedule.py` | `tests/test_pairing.py` |
 | M4 垂直梯度 | 选择柜时，对照剖面、区间、原行 | `GET /api/runs/{run_id}/gradient/{cabinet}/evidence` | `app/modules/gradient/interval.py` `app/modules/gradient/grade.py` | `tests/test_gradient.py` |
 | M5 异常持续 | 定位连续与瞬时异常段及其原行 | `GET /api/runs/{run_id}/episodes/{cabinet}` | `app/modules/episodes/segment.py` | `tests/test_episodes.py` |
-| M6 值班单勾稽 | 核对柜时与图档行，查报警误报漏报 | `GET /api/runs/{run_id}/audit` | `app/modules/audit/reconcile.py` | `tests/test_audit.py` |
+| M6 值班单勾稽 | 核对柜时与图档行，查报警误报漏报与认领清单 | `GET /api/runs/{run_id}/audit` `GET /api/runs/{run_id}/claims` | `app/modules/audit/reconcile.py` | `tests/test_audit.py` `tests/test_claims.py` |
 | M7 证据归卷 | 运行、复算或下载带摘要的归卷 | `POST /api/runs` `POST /api/runs/{run_id}/rerun` `GET /api/runs/{run_id}/export` | `app/modules/archive/pipeline.py` `app/modules/archive/service.py` `app/modules/archive/proof.py` `app/store.py` | `tests/test_archive.py` |
 
 ## 陷阱登记
@@ -34,11 +34,14 @@
 | TRAP-17 | `night-points.csv` 第二段改中文并换序 | 收报和测量栏对调 | 每段独立映射字段 | `app/modules/intake/readings.py` | `tests/test_intake.py::test_header_switch_changes_field_positions` |
 | TRAP-23 | 探头在 13:00 馆内时间换柜 | 同一时刻两柜采信 | 左闭右开选择新柜 | `app/modules/assignment/windows.py` | `tests/test_assignment.py::test_adjacent_windows_are_half_open_at_exact_move` |
 | TRAP-25 | 在混合部署契约上叠加同柜同层窗 | 任选一个探头 | 标重叠并拒用重叠段 | `app/modules/assignment/windows.py` | `tests/test_assignment.py::test_second_probe_at_same_position_marks_overlap_only` |
+| TRAP-26 | `handover.json` 中 `AL-0805` 与有效单同段 | 撤单当作已处置，原段算已报 | 撤单保留单号但不覆盖柜时，不负责 | `app/modules/audit/reconcile.py` | `tests/test_claims.py::test_cancelled_ticket_stays_in_handover_but_never_closes_the_episode` |
+| TRAP-27 | `AL-0802` 报警后近两小时才到场 | 用报警小时覆盖整段 | 只证到场之后开始的柜时，前段缺处置 | `app/modules/audit/reconcile.py` | `tests/test_claims.py::test_late_ticket_only_proves_hours_from_arrival_onward` |
+| TRAP-28 | 同段撤单加迟到有效单 | 撤单占掉负责位，迟到单被当重复 | 撤单不参与负责选择 | `app/modules/audit/reconcile.py` | `tests/test_claims.py::test_cancelled_ticket_never_becomes_responsible_even_with_a_later_active_one` |
 
 真实反例还有迁移前一分钟的下层读数不能与迁移后的上层配对，近中点无证读数不能挤掉同小时有效候选，区间端点的展示舍入不能改变判级，缺证切断连续异常，工单不能重复清销同一段。
 
 ## 对账规则
 
 - 应监测柜时按键集合核对，柜时数分到稳定、异常、缺证。
-- 工单与持续异常按柜时定位，列出重复报警和未报持续段。
+- 工单与持续异常按柜时定位，生成每段异常的认领清单；撤单保留原单号但不证明处置，迟到工单只证到场之后的柜时，未闭环段留下原因与缺处置小时。
 - 原始 CSV、契约、规则版次确定归卷键。复算和证据导出会验证结果 SHA-256。

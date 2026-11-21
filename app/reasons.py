@@ -9,6 +9,10 @@ REASONS = {
 
     "MISSING_UPPER": "缺上层测量", "NO_COMPATIBLE_LOWER": "无可用下层证据", "MISSING_RH": "湿度证据不足",
     "CI_OVERLAP": "置信区间跨阈值",
+
+    "CANCELLED": "工单已撤销，处置未发生", "LATE_ARRIVAL": "到场晚于段首，前段柜时仍缺处置",
+    "ARRIVED_AFTER_EPISODE": "到场晚于段末，未证明任何柜时", "NO_TICKET": "段内无报警工单",
+    "ALL_TICKETS_CANCELLED": "相关工单均已撤销，处置未发生", "TRANSIENT_ONLY": "仅瞬时异常，未构成持续段",
 }
 
 

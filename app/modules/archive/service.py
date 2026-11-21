@@ -27,7 +27,8 @@ class ArchiveService:
                     "cabinets": [cabinet.model_dump(mode="json") for cabinet in spec.cabinet_hours],
                     "tolerance_seconds": spec.tolerance_seconds, "sustained_hours": spec.sustained_hours,
                     "file": spec.csv, "hashes": hashes, "result_sha256": json_sha(evidence),
-                    "elapsed_ms": round(1000 * (perf_counter() - start)), "summary": evidence["audit"]["hours"]}
+                    "elapsed_ms": round(1000 * (perf_counter() - start)), "summary": evidence["audit"]["hours"],
+                    "claim_summary": evidence["audit"]["claim_summary"]}
         record, created = self.store.insert(manifest, evidence, preserve(package))
         if record["result_sha256"] != manifest["result_sha256"]:
             raise FieldError("RULE_DRIFT", "同版结果摘要不一致", 409)

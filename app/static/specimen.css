@@ -70,3 +70,7 @@ sup { font: 10px var(--mono); color: var(--accent); }
 .digest-list .rule-list { grid-template-columns: minmax(70px,.35fr) minmax(0,1fr); }
 .jump-list { display: grid; gap: 4px; margin-top: 6px; }
 @media (max-width: 690px) { .cut-drawing { min-height: 298px; } }
+.state.closed { color: var(--stable); }
+.state.partial { color: var(--warn); }
+.state.open { color: var(--unstable); }
+.state.cancelled { color: var(--missing); }

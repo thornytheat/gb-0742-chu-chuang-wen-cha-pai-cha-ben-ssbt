@@ -33,6 +33,7 @@ main { min-width: 0; flex: 1; padding: 0 18px 18px; }
 .kpi dd { font: 600 16px var(--mono); font-variant-numeric: tabular-nums; text-align: right; }
 .triple { display: grid; grid-template-columns: minmax(160px, .74fr) minmax(255px, 1.16fr) minmax(245px, 1fr); gap: var(--gap); align-items: start; }
 .split-records { grid-template-columns: minmax(175px, .7fr) minmax(0, 2fr) minmax(178px, .8fr); }
+.sheet-stack { grid-template-columns: minmax(0, 1fr); margin-top: var(--gap); }
 .panel { min-width: 0; background: var(--panel); border: 1px solid var(--ruling); border-top: 2px solid var(--ruling-dark); }
 .panel__head { min-height: 43px; display: flex; align-items: center; justify-content: space-between; gap: 6px; padding: 6px var(--pad); border-bottom: 1px solid var(--ruling); }
 .panel__head h2 { font: 700 17px var(--serif); }
@@ -74,6 +75,7 @@ main { min-width: 0; flex: 1; padding: 0 18px 18px; }
   .toolbar { background: white; position: static; padding: 0 0 5px; }
   main { padding: 0; }
   .triple, .gradient-sheet, .split-records { grid-template-columns: .8fr 1.5fr 1fr; gap: 8pt; }
+  .sheet-stack { grid-template-columns: minmax(0, 1fr); }
   .panel { background: white; }
   .scroll, .proof-scroll { max-height: none !important; overflow: visible !important; }
   thead { display: table-header-group; }

@@ -2,7 +2,7 @@ from pathlib import Path
 import os
 
 ROOT = Path(__file__).resolve().parents[1]
-POLICY = "glass-1.0.0"
+POLICY = "glass-1.1.0"
 MAX_FILE_BYTES = 1024 * 1024
 
 

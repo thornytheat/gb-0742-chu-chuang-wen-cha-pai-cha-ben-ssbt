@@ -183,16 +183,28 @@ async function episodes({get, base, cabinet, run, signal}) {
 function audit({audit,run}) {
   const hours = audit.hours;
   const rows = audit.row_audit;
+  const summary = audit.claim_summary;
   q('#audit-hours').replaceChildren(entries([['应监测',hours.expected],['稳定',hours.stable],['异常',hours.abnormal],['缺证',hours.missing],
     ['柜时核验',hours.balanced?'守恒':'有差异'],['图档行账',rows.balanced?'守恒':'有差异']]),
     entries([['采信',rows.accepted],['重传',rows.duplicate],['隔离',rows.isolated],['空行',rows.blank],['档头',rows.header]]));
+  put('#claim-tally',`闭环 ${summary.closed} · 部分 ${summary.partial} · 未闭环 ${summary.open}`);
+  table(q('#claims'),audit.claims,[['异常段','episode','mono'],['展柜','cabinet','mono'],
+    ['起',(item) => stamp(item.start),'mono'],['止',(item) => stamp(item.end),'mono'],['时长 h','hours','num'],
+    ['状态',(item) => state(item.status)],['负责工单',(item) => item.responsible ?? '—','mono'],
+    ['相关工单',(item) => item.tickets.join(' / '),'mono'],['迟到',(item) => item.arrived_late ? '是' : '否'],
+    ['缺处置柜时',(item) => item.uncovered_hours.length ? item.uncovered_hours.map(hour).join('、') : '—','mono']],'本次无异常段。');
+  const unclosed = audit.unclosed;
+  q('#unclosed').replaceChildren(...(unclosed.length ? unclosed.map((item) => {
+    const block = el('div',null,'proof-slip');
+    block.append(el('strong',`${item.episode} · ${words[item.status] ?? item.status}`),
+      el('p',item.note ?? item.reason ?? '—'),
+      el('p',`缺处置 ${item.uncovered_hours.map(stamp).join('、') || '无'}`));
+    if (item.cancelled_tickets.length) block.append(el('p',`已撤单 ${item.cancelled_tickets.join('、')}（处置未发生）`));
+    return block;
+  }) : [el('p','所有持续异常均已闭环。','empty')]));
   table(q('#tickets'),audit.tickets,[['工单',(item) => item.slot ? jump(item.id,'/',{run:run.id,cabinet:item.cabinet,at:item.slot}) : item.id,'mono'],
-    ['展柜','cabinet','mono'],['馆内时刻',(item) => stamp(item.at_utc),'mono'],['勾稽',(item) => state(item.code)],
-    ['关联段','episode','mono'],['原行',(item) => item.evidence.map(rowLabel).join(' / '),'mono']],'本次无报警工单。');
-  const present = audit.unreported.length ? audit.unreported.join('、') : '无';
-  q('#unreported').replaceChildren(entries([['缺工单',present],['已核销',audit.ticket_counts.MATCHED ?? 0],
-    ['工单差项',audit.tickets.length - (audit.ticket_counts.MATCHED ?? 0)],['柜时缺键',hours.missing_keys.length],
-    ['柜时多键',hours.extra_keys.length],['柜时重键',hours.duplicate_keys.length]]));
+    ['展柜','cabinet','mono'],['馆内时刻',(item) => stamp(item.at_utc),'mono'],['到场',(item) => item.arrived_utc ? stamp(item.arrived_utc) : '—','mono'],
+    ['勾稽',(item) => state(item.code)],['关联段','episode','mono'],['原行',(item) => item.evidence.map(rowLabel).join(' / '),'mono']],'本次无报警工单。');
 }
 
 function archive({history,run}) {
@@ -206,8 +218,14 @@ function archive({history,run}) {
   q('#digests').classList.add('digest-list');
   q('#digests').replaceChildren(entries([['归卷号',run.id],['原档 SHA-256',run.hashes.file_sha256],
     ['契约 SHA-256',run.hashes.contract_sha256],['结果 SHA-256',run.result_sha256]]));
+  const claims = run.claim_summary;
+  const claimLine = !claims ? '本版规则未记录认领结论'
+    : claims.unclosed.length
+      ? claims.unclosed.map((item) => `${item.episode}（${words[item.status] ?? item.status}：${item.note ?? item.reason}）`).join('；')
+      : '全部持续异常已闭环';
   q('#archive-spec').replaceChildren(entries([['输入',run.file],['规则',run.policy],['配准容差',`${run.tolerance_seconds} s`],
-    ['持续门槛',`${run.sustained_hours} h`],['耗时',`${run.elapsed_ms} ms`],['归卷柜号',run.cabinets.map((item) => item.id).join('、')]]));
+    ['持续门槛',`${run.sustained_hours} h`],['耗时',`${run.elapsed_ms} ms`],['归卷柜号',run.cabinets.map((item) => item.id).join('、')],
+    ['认领结论',claims ? `闭环 ${claims.closed} · 部分 ${claims.partial} · 未闭环 ${claims.open}` : '—'],['未闭环段',claimLine]]));
 }
 
 export const stages = {intake, assignment, pairing, gradient, episodes, audit, archive};

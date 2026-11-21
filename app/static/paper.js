@@ -8,6 +8,8 @@ export const words = {
   LOWER_CONTENTION:'下层读数占用', CI_OVERLAP:'区间跨阈值', MISSING_RH:'湿度缺证',
   UNUSED_LOWER:'未用下层', EXTRA_UPPER:'额外上层', LATE_RECEIPT:'迟报', temperature:'温度', humidity:'湿度',
   upper:'上层', lower:'下层', accepted:'采信', isolated:'隔离', header:'栏头', duplicate:'重复', blank:'空行',
+  CLOSED:'已闭环', PARTIAL:'部分闭环', OPEN:'未闭环', CANCELLED:'已撤单', LATE_ARRIVAL:'到场前缺处置',
+  ARRIVED_AFTER_EPISODE:'到场面晚于段', NO_TICKET:'段内无单', ALL_TICKETS_CANCELLED:'工单均已撤销',
 };
 const timeZone = 'Asia/Shanghai';
 const clock = new Intl.DateTimeFormat('zh-CN', {timeZone, hour:'2-digit',minute:'2-digit',hourCycle:'h23'});

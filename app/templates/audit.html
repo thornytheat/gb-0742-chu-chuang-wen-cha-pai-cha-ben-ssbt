@@ -1,6 +1,9 @@
 <div class="triple split-records">
   <section class="panel"><div class="panel__head"><h2>柜时账</h2></div><div id="audit-hours" class="panel__body"></div></section>
-  <section class="panel wide-pane"><div class="panel__head"><h2>报警工单 <sup>1</sup></h2></div><div id="tickets" class="scroll"></div></section>
-  <section class="panel"><div class="panel__head"><h2>归档差项</h2></div><div id="unreported" class="panel__body"></div></section>
+  <section class="panel wide-pane"><div class="panel__head"><h2>认领清单 <sup>1</sup></h2><span id="claim-tally">—</span></div><div id="claims" class="scroll"></div></section>
+  <section class="panel"><div class="panel__head"><h2>未闭环</h2></div><div id="unclosed" class="panel__body scroll"></div></section>
 </div>
-<ol class="footnotes"><li>同一持续异常只与最早一张可对应的工单核销。</li></ol>
+<div class="triple split-records sheet-stack">
+  <section class="panel"><div class="panel__head"><h2>报警工单 <sup>2</sup></h2></div><div id="tickets" class="scroll"></div></section>
+</div>
+<ol class="footnotes"><li>每段异常由最早到场且覆盖柜时的有效工单负责；撤单保留原工单号，但不计为已处置。</li><li>迟到工单只证明到场之后开始的柜时，到场之前的异常小时仍缺处置。</li></ol>
