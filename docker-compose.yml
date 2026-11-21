@@ -1,0 +1,17 @@
+services:
+  app:
+    build: .
+    ports:
+      - "${MUSEUM_PORT:-18431}:8000"
+    environment:
+      MUSEUM_DB: /records/glass.sqlite3
+    volumes:
+      - glass_records:/records
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/healthz', timeout=2).close()"]
+      interval: 10s
+      timeout: 3s
+      retries: 4
+      start_period: 5s
+volumes:
+  glass_records:

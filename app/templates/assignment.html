@@ -1,0 +1,13 @@
+<div class="triple split-records">
+  <section class="panel"><div class="panel__head"><h2>时点查柜</h2></div><div class="panel__body">
+    <form id="lookup-form" class="stacked-form">
+      <label>探头 <input name="probe" value="0008" required></label>
+      <label>测量时刻 <input name="at" value="2026-11-20T13:00:00+08:00" required></label>
+      <button class="button fill" type="submit">查部署</button>
+    </form>
+    <div id="lookup-result" aria-live="polite"></div>
+  </div></section>
+  <section class="panel wide-pane"><div class="panel__head"><h2>有效部署窗 <sup>1</sup></h2></div><div id="deployments" class="scroll"></div></section>
+  <section class="panel"><div class="panel__head"><h2>迁移例外</h2></div><div id="assignment-issues" class="panel__body scroll"></div></section>
+</div>
+<ol class="footnotes"><li>部署窗含起点，终点归下一班部署。</li></ol>

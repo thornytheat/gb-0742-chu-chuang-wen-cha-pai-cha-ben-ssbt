@@ -1,0 +1,15 @@
+<div class="triple gradient-sheet">
+  <section class="panel">
+    <div class="panel__head"><h2>柜时签</h2><label>判级 <select id="grade-filter" aria-label="柜时判级"><option value="all">全部</option><option value="ABNORMAL">异常</option><option value="MISSING">缺证</option><option value="STABLE">稳定</option></select></label></div>
+    <div id="grade-slots" class="scroll"></div>
+  </section>
+  <section class="panel cut-panel">
+    <div class="panel__head"><h2>柜体剖面 <sup>1</sup></h2><strong id="cut-label">—</strong></div>
+    <div id="section-cut" class="cut-body"></div>
+  </section>
+  <section class="panel paper-proof">
+    <div class="panel__head"><h2>区间判级 <sup>2</sup></h2><span id="grade-time">—</span></div>
+    <div id="grade-evidence" class="panel__body proof-scroll" aria-live="polite"></div>
+  </section>
+</div>
+<ol class="footnotes"><li>剖面高度单位 mm，探头取自该柜时的配准原行。</li><li>区间按独立测量误差推算，覆盖概率约 95%。</li></ol>
